@@ -21,7 +21,15 @@ header {
     background-color: var(--color-primary);
     color: var(--color-text); /* Черный текст на желтом фоне */
     padding: 20px 5%;
-    text-align: center;
+    
+    /* ДОБАВЛЯЕМ Flexbox, чтобы расположить h1 и меню в ряд */
+    display: flex; 
+    /* Разносим элементы по углам (меню и логотип) */
+    justify-content: space-between; 
+    /* Выравниваем их по центру вертикали */
+    align-items: center; 
+    
+    text-align: center; /* Эту строку можно удалить, т.к. flexbox ее перекрывает */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
@@ -112,4 +120,17 @@ header h1 {
 /* ГЛАВНОЕ: Показываем меню при наведении на контейнер */
 .menu-container:hover .dropdown-menu {
     display: block;
+}
+/* Стили для списка команды на странице "О нас" */
+.team-list {
+    list-style-type: none; /* Убирает стандартные точки */
+    padding-left: 0;
+}
+
+.team-list li {
+    background-color: #1C1C1C; /* Темный фон для каждой строки */
+    padding: 10px 15px;
+    margin-bottom: 8px; 
+    border-left: 5px solid var(--color-primary); /* Желтая полоса */
+    font-weight: bold;
 }
