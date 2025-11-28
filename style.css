@@ -61,7 +61,7 @@ header h1 {
     border-radius: 15px; 
     
     /* Padding, увеличенный для рамки */
-    padding: 22px; 
+    padding: 20px; 
     
     /* Стили для ГРАДИЕНТНОЙ РАМКИ */
     background-image: linear-gradient(to bottom right, var(--color-background), var(--color-background));
@@ -85,7 +85,7 @@ header h1 {
     border-radius: 18px; 
     
     /* Устанавливаем толщину рамки */
-    padding: 2px; 
+    padding: 1px; 
     
     /* Размещаем псевдоэлемент под контентом */
     z-index: -1; 
@@ -175,6 +175,4 @@ header h1 {
     margin-bottom: 8px; 
     border-left: 5px solid var(--color-primary); /* Желтая полоса */
     font-weight: bold;
-
 }
-

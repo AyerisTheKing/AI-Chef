@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chef - Chat</title>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="stylesheet" href="chatstyle.css"> 
+    
+    <link rel="icon" type="image/jpeg" href="favicon.jpg"> 
+</head>
+<body>
+    <header>
+        <h1><a href="index.html" style="color: black; text-decoration: none;">AI Chef</a></h1>
+
+        <div class="menu-container">
+            <div class="hamburger-icon">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+
+            <nav class="dropdown-menu">
+                <a href="index.html">Главная</a>
+                <a href="about.html">О Нас</a>
+                <a href="#">Настройки</a> 
+            </nav>
+        </div>
+    </header>
+
+    <div class="container chat-interface">
+        <h2>🧑‍🍳 AI Chef: Ваш умный помощник</h2>
+        
+        <div id="chat-messages" class="messages-area">
+            <p class="bot-message">Здравствуйте!Что у вас сегодня под рукой?</p>
+        </div>
+        
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Введите ингредиенты (например, курица, картошка, лук)...">
+            <button id="send-button" class="button">Найти рецепт!</button>
+        </div>
+    </div>
+    
+    <script>
+        // Здесь в дальнейшем будет логика отправки запросов к API
+        // и отображения ответов.
+    </script>
+</body>
+</html>
