@@ -57,3 +57,59 @@ header h1 {
 .button:hover {
     background-color: #FFA500; /* Немного темнее при наведении */
 }
+/* Контейнер меню (чтобы всё стояло в углу) */
+.menu-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* Сама иконка (контейнер для полосок) */
+.hamburger-icon {
+    width: 35px;
+    height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Рисуем три полоски */
+.bar {
+    width: 100%;
+    height: 5px;
+    background-color: var(--color-text); /* Черный цвет */
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+/* Выпадающий список (скрыт по умолчанию) */
+.dropdown-menu {
+    display: none; /* СКРЫВАЕМ! */
+    position: absolute;
+    right: 0;
+    top: 100%; /* Появляется снизу от иконки */
+    background-color: var(--color-background); /* Черный фон */
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border: 1px solid var(--color-primary); /* Желтая рамка */
+}
+
+/* Ссылки внутри меню */
+.dropdown-menu a {
+    color: var(--color-light-text);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+/* Эффект при наведении на ссылки */
+.dropdown-menu a:hover {
+    background-color: #333;
+    color: var(--color-primary);
+}
+
+/* ГЛАВНОЕ: Показываем меню при наведении на контейнер */
+.menu-container:hover .dropdown-menu {
+    display: block;
+}
