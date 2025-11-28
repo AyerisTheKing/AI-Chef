@@ -5,7 +5,7 @@
 .chat-interface {
     /* Чтобы градиентная рамка не применялась к чату */
     border: none !important; 
-    padding: 0;
+    padding: 3px;
 }
 
 .messages-area {

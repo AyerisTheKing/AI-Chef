@@ -72,9 +72,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Привязка к кнопке
     sendButton.addEventListener('click', handleSend);
 
-    // Привязка к клавише Enter в поле ввода
-    userInput.addEventListener('keypress', (e) => {
+    // Привязка к клавише Enter в поле ввода (используем keydown для лучшей совместимости)
+    userInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
+            e.preventDefault();
             handleSend();
         }
     });
