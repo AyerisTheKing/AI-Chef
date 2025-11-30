@@ -1,9 +1,6 @@
-/* chat.js v1.0 | 30.11.2025 | Финальная стабильная версия с API, таймаутом и анимацией */
+/* chat.js v2.0 | 30.11.2025 | Использование Serverless Proxy для защиты ключа */
 
-const GEMINI_API_KEY = "AIzaSyA2MGN5hdXm4KdqfUe748DPfTbFrnlsUeI"; // !!! ЗАМЕНИТЕ НА СВОЙ КЛЮЧ API !!!
-const SYSTEM_PROMPT = "Ты — опытный шеф-повар и кулинарный эксперт AI Chef. Твоя задача — подбирать рецепты только по тем ингредиентам, которые назвал пользователь. Отвечай дружелюбно, уверенно и профессионально. Всегда указывай название блюда, список ингредиентов и краткую инструкцию по приготовлению.";
-
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + GEMINI_API_KEY;
+const PROXY_URL = "/.netlify/functions/gemini-proxy"; // Адрес нашего нового прокси-сервера Netlify
 const API_TIMEOUT_MS = 15000; // 15 секунд
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,10 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatMessages = document.getElementById('chat-messages');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
+    let isRequestInProgress = false;
 
-    let isRequestInProgress = false; // Флаг защиты от спама
-
-    // ФУНКЦИЯ ДОБАВЛЕНИЯ СООБЩЕНИЯ
+    // ФУНКЦИЯ ДОБАВЛЕНИЯ СООБЩЕНИЯ (без изменений)
     function appendMessage(sender, text, isTemporary = false) {
         const messageElement = document.createElement('p');
         messageElement.className = sender === 'user' ? 'user-message' : 'bot-message';
@@ -29,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return messageElement;
     }
 
-    // ФУНКЦИЯ ЭФФЕКТА ПЕЧАТНОЙ МАШИНКИ
+    // ФУНКЦИЯ ЭФФЕКТА ПЕЧАТНОЙ МАШИНКИ (без изменений)
     function typeWriterEffect(element, text) {
         let i = 0;
         element.textContent = ''; 
@@ -69,43 +65,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
 
         try {
-            const response = await fetch(GEMINI_API_URL, {
+            // !!! НОВОЕ: Отправляем запрос на наш ПРОКСИ-СЕРВЕР Netlify
+            const response = await fetch(PROXY_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 signal: controller.signal,
-                body: JSON.stringify({
-                    // Системная инструкция
-                    systemInstruction: {
-                        parts: [{ text: SYSTEM_PROMPT }]
-                    },
-                    contents: [
-                        {
-                            role: "user",
-                            // Шаблонная строка (Template Literal)
-                            parts: [{ text: `Мои ингредиенты: ${text}. Какой рецепт ты предложишь?` }]
-                        }
-                    ],
-                    generationConfig: {
-                        maxOutputTokens: 1500, 
-                        temperature: 0.7 
-                    }
-                })
+                // Отправляем только текст, ключ остается на сервере
+                body: JSON.stringify({ userText: text }) 
             });
 
             clearTimeout(timeoutId);
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error ? errorData.error.message : `HTTP Error: ${response.status}`);
+                throw new Error(errorData.message || `Произошла ошибка на сервере: ${response.status}`);
             }
 
             const data = await response.json();
             
-            if (data.candidates && data.candidates.length > 0 && data.candidates[0].content) {
-                chefResponse = data.candidates[0].content.parts[0].text;
-            } else {
-                chefResponse = "Шеф-повар в замешательстве. Попробуйте уточнить список продуктов.";
-            }
+            // Получаем чистый ответ, который вернул gemini-proxy.js
+            chefResponse = data.message;
 
         } catch (error) {
             clearTimeout(timeoutId);
@@ -114,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (error.name === 'AbortError') {
                 chefResponse = "Время ожидания истекло. Похоже, на кухне завал. Попробуйте еще раз!";
             } else {
-                chefResponse = `Произошла ошибка: ${error.message}. Проверьте соединение.`;
+                chefResponse = `Произошла ошибка: ${error.message}. Проверьте настройки ключа API в Netlify.`;
             }
 
         } finally {
