@@ -61,7 +61,7 @@ header h1 {
     border-radius: 15px; 
     
     /* Padding, увеличенный для рамки */
-    padding: 10px; 
+    padding: 1px; 
     
     /* Стили для ГРАДИЕНТНОЙ РАМКИ */
     background-image: linear-gradient(to bottom right, var(--color-background), var(--color-background));
@@ -79,7 +79,7 @@ header h1 {
     bottom: 1px;
     
     padding: 1px; 
-    
+
     /* Создаем градиент для фона */
     background: linear-gradient(135deg, #FFB300, #FFD700, #FFFFFF); 
     

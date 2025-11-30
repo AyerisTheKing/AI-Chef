@@ -2,10 +2,8 @@
 /* СТИЛИ ДЛЯ ИНТЕРФЕЙСА ЧАТА (chatindex.html) */
 /* ================================== */
 
-.chat-interface {
-    /* Чтобы градиентная рамка не применялась к чату */
-    border: none !important; 
-    padding: 3px;
+.chat-interface { 
+    border: none !important;
 }
 
 .messages-area {
@@ -55,4 +53,32 @@
     margin-bottom: 10px;
     float: right; /* Сообщения пользователя справа */
     clear: both;
+}
+
+/* ================================== */
+/* СТИЛИ АНИМАЦИИ ПЕЧАТИ */
+/* ================================== */
+
+/* Основной стиль для элементов в режиме печати */
+.typing {
+    /* Чтобы текст не прыгал, можно добавить минимальный размер */
+    min-height: 1.2em; 
+    
+    /* Добавляем "курсор" с помощью правой рамки */
+    border-right: 3px solid var(--color-light-text);
+    
+    /* Обрезаем, чтобы курсор был виден только на последней строке */
+    overflow: hidden; 
+    white-space: pre-wrap; /* Сохраняет пробелы и перенос строк */
+}
+
+/* Анимация мигающего курсора */
+@keyframes blink {
+    from, to { border-color: transparent; }
+    50% { border-color: var(--color-light-text); }
+}
+
+/* Применяем анимацию только, когда класс 'typing' активен */
+.typing {
+    animation: blink 0.7s step-end infinite;
 }

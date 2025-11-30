@@ -1,83 +1,129 @@
 // ===============================================
-// НОВАЯ СТРУКТУРА: Ждем загрузки страницы (Решение проблемы)
+// chat.js - РЕАЛЬНАЯ ИНТЕГРАЦИЯ AI CHEF И АНИМАЦИЯ ПЕЧАТИ
 // ===============================================
 
-document.addEventListener('DOMContentLoaded', (event) => {
-    
-    // ВЕСЬ ПРЕДОСТАВЛЕННЫЙ ВАМИ КОД ДОЛЖЕН БЫТЬ ВНУТРИ ЭТОГО БЛОКА:
+// !!! ВАЖНО: Ваш API ключ. Не оставляйте его в открытом доступе надолго!
+const GEMINI_API_KEY = "AIzaSyA2MGN5hdXm4KdqfUe748DPfTbFrnlsUeI"; 
+const SYSTEM_PROMPT = "Ты — опытный шеф-повар и кулинарный эксперт AI Chef. Твоя задача — подбирать рецепты только по тем ингредиентам, которые назвал пользователь. Отвечай дружелюбно, уверенно и профессионально. Всегда указывай название блюда, список ингредиентов и краткую инструкцию по приготовлению.";
 
-    // 1. Получаем ссылки на элементы из chatindex.html
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + GEMINI_API_KEY;
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    // 1. Получаем ссылки на элементы
     const chatMessages = document.getElementById('chat-messages');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
 
-    // 2. Функция для создания и добавления сообщения в чат
-    function appendMessage(sender, text) {
+    // 2. Функция для создания и добавления сообщения в чат (возвращает элемент)
+    function appendMessage(sender, text, isTemporary = false) {
         const messageElement = document.createElement('p');
-        // Используем классы, определенные в chatstyle.css
-        if (sender === 'user') {
-            messageElement.className = 'user-message';
-        } else {
-            messageElement.className = 'bot-message';
+        messageElement.className = sender === 'user' ? 'user-message' : 'bot-message';
+        messageElement.textContent = text;
+        if (isTemporary) {
+            messageElement.id = 'temp-message'; 
         }
         
-        // Вставляем текст
-        messageElement.textContent = text; 
-        
-        // Добавляем элемент в окно чата
         chatMessages.appendChild(messageElement);
-        
-        // Автоматическая прокрутка вниз
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        return messageElement; // КРИТИЧНО для анимации: возвращаем элемент
     }
 
-    // 3. Функция, которая запускается при нажатии кнопки
-    function handleSend() {
-        const text = userInput.value.trim();
+
+    // 3. НОВАЯ ФУНКЦИЯ: Анимация печати текста
+    function typeWriterEffect(element, text) {
+        let i = 0;
+        element.textContent = ''; // Очищаем элемент
         
-        // Проверка, что пользователь что-то ввел
+        function type() {
+            if (i < text.length) {
+                element.textContent += text.charAt(i); 
+                i++;
+                setTimeout(type, 30); // Скорость печати (30 мс)
+            } else {
+                element.classList.remove('typing'); // Удаляем курсор
+            }
+        }
+        
+        element.classList.add('typing'); // Добавляем курсор
+        type();
+    }
+
+
+    // 4. Асинхронная функция отправки запроса (ОБЪЕДИНЕННАЯ ЛОГИКА)
+    async function handleSend() {
+        const text = userInput.value.trim();
         if (text === '') return;
 
         // ШАГ 1: Отображаем сообщение пользователя
         appendMessage('user', text);
-        
-        // Очищаем поле ввода
         userInput.value = '';
-
-        // ШАГ 2: Заглушка для ответа ИИ (Mock Logic)
-        const botResponseText = generateMockChefResponse(text);
-
-        // Имитация ответа через небольшую задержку
-        setTimeout(() => {
-            appendMessage('bot', botResponseText);
-        }, 200);
-    }
-
-    // 4. Логика заглушки для имитации ответа AI Chef
-    function generateMockChefResponse(ingredients) {
-        const baseResponse = "Превосходно! Учитывая ваши ингредиенты (" + ingredients + "), я подобрал идеальный рецепт: ";
         
-        if (ingredients.toLowerCase().includes('курица') && ingredients.toLowerCase().includes('картошка')) {
-            return baseResponse + "Жареная курица с ароматным картофелем по-деревенски. Это просто и сытно! Приступим к приготовлению?";
-        } else if (ingredients.toLowerCase().includes('яйца') && ingredients.toLowerCase().includes('сыр')) {
-            return baseResponse + "Идеальный французский омлет (Фриттата) с сыром и травами. Быстрый и элегантный завтрак! Подробности у вас на экране.";
-        } else {
-            return baseResponse + "Изысканный ужин в стиле Fusion. Нам понадобится еще пара специй, но блюдо будет стоить того! Уточните, что именно вы хотите?";
+        sendButton.disabled = true;
+        userInput.disabled = true;
+
+        // Временное сообщение-заглушка
+        const tempMessageElement = appendMessage('bot', "Шеф-повар ищет идеальный рецепт...", true); 
+
+        // ===========================================
+        // ЛОГИКА ВЫЗОВА API GEMINI
+        // ===========================================
+        try {
+            const response = await fetch(GEMINI_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            role: "user",
+                            parts: [{text: SYSTEM_PROMPT + ` Мои ингредиенты: ${text}. Какой рецепт ты предложишь?`} ]
+                        }
+                    ],
+                    config: {
+                        maxOutputTokens: 1024, 
+                        temperature: 0.7 
+                    }
+                })
+            });
+
+            const data = await response.json();
+
+            // Удаляем временное сообщение сразу после получения данных
+            tempMessageElement.remove(); 
+            
+            let chefResponse = "Извините, я не смог найти подходящий рецепт. Проверьте ингредиенты или попробуйте еще раз.";
+
+            if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts.length > 0) {
+                chefResponse = data.candidates[0].content.parts[0].text;
+            } else if (data.error) {
+                chefResponse = `Ошибка API: ${data.error.message}. Проверьте правильность ключа.`;
+            }
+
+            // ШАГ 5: Отображение реального ответа с АНИМАЦИЕЙ
+            const botMessageElement = appendMessage('bot', ''); // Создаем пустой элемент
+            typeWriterEffect(botMessageElement, chefResponse); // Запускаем анимацию!
+
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            tempMessageElement.remove();
+            appendMessage('bot', "Ошибка соединения. Проверьте интернет или ключ API.");
+        } finally {
+            // Включаем кнопку и поле ввода обратно
+            sendButton.disabled = false;
+            userInput.disabled = false;
+            userInput.focus();
         }
     }
 
-
     // 5. Привязка функций к событиям
-
-    // Привязка к кнопке
     sendButton.addEventListener('click', handleSend);
 
-    // Привязка к клавише Enter в поле ввода (используем keydown для лучшей совместимости)
     userInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault();
+            e.preventDefault(); 
             handleSend();
         }
     });
 
-}); // <-- Конец блока DOMContentLoaded
+});
