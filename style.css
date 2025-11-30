@@ -1,3 +1,7 @@
+/* ================================== */
+/* ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И СБРОС СТИЛЕЙ */
+/* ================================== */
+
 /* Определение основных цветов как переменных для удобства */
 :root {
     --color-primary: #FFB300; /* Яркий Оранжево-Желтый */
@@ -9,84 +13,42 @@
 /* Стиль для всего тела страницы */
 body {
     font-family: Arial, sans-serif;
-    background-color: var(--color-background); /* Фон страницы черный */
-    color: var(--color-light-text); /* Текст по умолчанию белый */
+    background-color: var(--color-background); 
+    color: var(--color-light-text); 
     margin: 0;
     padding: 0;
     line-height: 1.6;
 }
 
-/* Шапка сайта (Header) - используем яркий цвет как в презентации */
+/* ================================== */
+/* ШАПКА И НАВИГАЦИЯ */
+/* ================================== */
+
 header {
     background-color: var(--color-primary);
-    color: var(--color-text); /* Черный текст на желтом фоне */
+    color: var(--color-text);
     padding: 20px 5%;
     
-    /* ДОБАВЛЯЕМ Flexbox, чтобы расположить h1 и меню в ряд */
     display: flex; 
-    /* Разносим элементы по углам (меню и логотип) */
+    /* Разносим элементы по углам */
     justify-content: space-between; 
-    /* Выравниваем их по центру вертикали */
     align-items: center; 
     
-    text-align: center; /* Эту строку можно удалить, т.к. flexbox ее перекрывает */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    /* КРИТИЧНО для центрирования h1 */
+    position: relative; 
 }
 
+/* Логотип AI Chef (Центрирование) */
 header h1 {
     margin: 0;
     font-size: 2.5em; 
     text-transform: uppercase;
-    }
-
-/* Изменения в header */
-header {
-    /* ... (остальной код) ... */
-    display: flex; 
-    /* Используем space-between, чтобы разнести элементы */
-    justify-content: space-between; 
-    align-items: center; 
-    /* ... (остальной код) ... */
-}
-/* Контейнер для основного контента */
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
     
-    /* ФОН ДЛЯ СОЗДАНИЯ РАМКИ */
-    /* Используем градиент для border-image */
-    border: 3px solid transparent; /* Ширина рамки */
-    border-radius: 18px; 
-    
-    /* САМ ГРАДИЕНТ РАМКИ */
-    border-image: linear-gradient(135deg, var(--color-primary), #FFD700, #FFFFFF) 1;
-    
-    /* ФОН ВНУТРИ КОНТЕЙНЕРА */
-    background-color: var(--color-background);
-    
-    /* Padding, чтобы контент не прилипал к рамке */
-    padding: 20px; 
-}
-
-/* Кнопки/Акцентные элементы */
-.button {
-    display: inline-block;
-    background-color: var(--color-primary);
-    color: var(--color-text);
-    padding: 10px 20px;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-    
-    /* НОВОЕ: Закругляем углы на 14px */
-    border-radius: 14px; 
-}
-
-.button:hover {
-    background-color: #FFA500; /* Немного темнее при наведении */
+    /* СТИЛИ ДЛЯ ЦЕНТРИРОВАНИЯ */
+    position: absolute; 
+    left: 50%;          
+    transform: translateX(-50%); 
 }
 
 /* Контейнер меню (чтобы всё стояло в углу) */
@@ -116,15 +78,15 @@ header {
 
 /* Выпадающий список (скрыт по умолчанию) */
 .dropdown-menu {
-    display: none; /* СКРЫВАЕМ! */
+    display: none; 
     position: absolute;
     right: 0;
-    top: 100%; /* Появляется снизу от иконки */
-    background-color: var(--color-background); /* Черный фон */
+    top: 100%; 
+    background-color: var(--color-background); 
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
-    border: 1px solid var(--color-primary); /* Желтая рамка */
+    border: 1px solid var(--color-primary); 
 }
 
 /* Ссылки внутри меню */
@@ -145,16 +107,74 @@ header {
 .menu-container:hover .dropdown-menu {
     display: block;
 }
-/* Стили для списка команды на странице "О нас" */
-.team-list {
-    list-style-type: none; /* Убирает стандартные точки */
-    padding-left: 0;
+
+/* ================================== */
+/* ОСНОВНОЙ КОНТЕНТ И ГРАДИЕНТНАЯ РАМКА */
+/* ================================== */
+
+/* Контейнер для основного контента (С ИСПРАВЛЕННОЙ ГРАДИЕНТНОЙ РАМКОЙ) */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    
+    /* ФОН ДЛЯ СОЗДАНИЯ РАМКИ */
+    border: 3px solid transparent; /* Ширина рамки */
+    border-radius: 18px; 
+    
+    /* САМ ГРАДИЕНТ РАМКИ */
+    border-image: linear-gradient(135deg, var(--color-primary), #FFD700, #FFFFFF) 1;
+    
+    /* ФОН ВНУТРИ КОНТЕЙНЕРА */
+    background-color: var(--color-background);
+    
+    /* Padding, чтобы контент не прилипал к рамке */
+    padding: 20px; 
 }
 
-.team-list li {
-    background-color: #1C1C1C; /* Темный фон для каждой строки */
-    padding: 10px 15px;
-    margin-bottom: 8px; 
-    border-left: 5px solid var(--color-primary); /* Желтая полоса */
-    font-weight: bold;
+
+/* ================================== */
+/* СТИЛИ ЧАТА */
+/* ================================== */
+
+.chat-interface {
+    border: none !important; 
+    padding: 3px;
+}
+
+.messages-area {
+    height: 300px; /* Фиксированная высота окна чата */
+    overflow-y: auto; /* Добавляем прокрутку */
+    border: 1px solid #333;
+    border-radius: 14px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #1C1C1C;
+}
+
+.input-area {
+    display: flex;
+    gap: 10px;
+}
+
+#user-input {
+    flex-grow: 1; /* Растягивает поле ввода */
+    padding: 10px;
+    border: 2px solid var(--color-primary);
+    background-color: var(--color-background);
+    color: var(--color-light-text);
+    border-radius: 8px;
+    font-size: 1em;
+}
+
+/* Стили для сообщений */
+.bot-message {
+    background-color: var(--color-primary);
+    color: var(--color-text);
+    padding: 8px 12px;
+    border-radius: 15px 15px 15px 0; /* Скругление углов */
+    max-width: 80%;
+    margin-bottom: 10px;
+    float: left; /* Сообщения бота слева */
+    clear: both;
 }
