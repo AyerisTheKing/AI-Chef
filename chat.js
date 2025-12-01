@@ -1,49 +1,17 @@
-/* chat.js v2.0 | 30.11.2025 | Использование Serverless Proxy для защиты ключа */
+/* chat.js v2.0 | Использование Serverless Proxy для защиты ключа */
 
-const PROXY_URL = "/.netlify/functions/gemini-proxy"; // Адрес нашего нового прокси-сервера Netlify
+const PROXY_URL = "/.netlify/functions/gemini-proxy"; // Адрес вашего прокси
 const API_TIMEOUT_MS = 15000; // 15 секунд
 
 document.addEventListener('DOMContentLoaded', () => {
+    // ... (Остальной код для DOM элементов, appendMessage, typeWriterEffect остается прежним) ...
 
     const chatMessages = document.getElementById('chat-messages');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
     let isRequestInProgress = false;
 
-    // ФУНКЦИЯ ДОБАВЛЕНИЯ СООБЩЕНИЯ (без изменений)
-    function appendMessage(sender, text, isTemporary = false) {
-        const messageElement = document.createElement('p');
-        messageElement.className = sender === 'user' ? 'user-message' : 'bot-message';
-        messageElement.textContent = text;
-        
-        if (isTemporary) {
-            messageElement.classList.add('temp-loading-msg');
-        }
-        
-        chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        return messageElement;
-    }
-
-    // ФУНКЦИЯ ЭФФЕКТА ПЕЧАТНОЙ МАШИНКИ (без изменений)
-    function typeWriterEffect(element, text) {
-        let i = 0;
-        element.textContent = ''; 
-        
-        function type() {
-            if (i < text.length) {
-                element.textContent += text.charAt(i); 
-                i++;
-                chatMessages.scrollTop = chatMessages.scrollHeight; 
-                setTimeout(type, 20);
-            } else {
-                element.classList.remove('typing'); 
-            }
-        }
-        
-        element.classList.add('typing'); 
-        type();
-    }
+    // ... (функции appendMessage и typeWriterEffect) ...
 
     // ГЛАВНАЯ ФУНКЦИЯ ОТПРАВКИ
     async function handleSend() {
@@ -65,12 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
 
         try {
-            // !!! НОВОЕ: Отправляем запрос на наш ПРОКСИ-СЕРВЕР Netlify
+            // !!! НОВОЕ: Отправляем запрос на ваш ПРОКСИ-СЕРВЕР Netlify
             const response = await fetch(PROXY_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 signal: controller.signal,
-                // Отправляем только текст, ключ остается на сервере
                 body: JSON.stringify({ userText: text }) 
             });
 
@@ -83,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             
-            // Получаем чистый ответ, который вернул gemini-proxy.js
             chefResponse = data.message;
 
         } catch (error) {
