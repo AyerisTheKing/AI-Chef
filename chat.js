@@ -1,7 +1,7 @@
 /* chat.js v2.1 | 01.12.2025 | Исправлено: добавлены функции appendMessage и typeWriterEffect */
 
 // Адрес вашего прокси-сервера на Netlify
-const PROXY_URL = "github.com/AyerisTheKing/AI-Chef/blob/main/.netlify/functions/gemini-proxy.js"; 
+const PROXY_URL = "/.netlify/functions/gemini-proxy"; 
 const API_TIMEOUT_MS = 15000; // 15 секунд
 
 document.addEventListener('DOMContentLoaded', () => {
