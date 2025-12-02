@@ -1,218 +1,244 @@
-/* style.css v1.2 | 30.11.2025 | Меню-бургер перемещено в правый угол */
+/* style.css | Дизайн для AI Chef */
 
-/* ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ */
+/* --- 1. ГЛОБАЛЬНЫЕ НАСТРОЙКИ --- */
 :root {
-    --color-primary: #FFB300; 
-    --color-text: #1C1C1C;    
-    --color-background: #000000; 
-    --color-dark-element: #1C1C1C; 
-    --color-light-text: #FFFFFF; 
+    --primary-color: #ffb300;       /* Оранжево-желтый (фирменный цвет) */
+    --primary-hover: #e09e00;       /* Цвет кнопки при наведении */
+    --text-color: #ffffff;          /* Белый текст */
+    --bg-overlay: rgba(0, 0, 0, 0.75); /* Затемнение фона (75%) */
+    --container-bg: rgba(20, 20, 20, 0.85); /* Полупрозрачный фон для блоков */
+    --user-msg-bg: #ffb300;         /* Цвет сообщения пользователя */
+    --bot-msg-bg: #333333;          /* Цвет сообщения бота */
 }
 
-/* СБРОС СТИЛЕЙ */
-body {
-    font-family: Arial, sans-serif;
-    background-color: var(--color-background); 
-    color: var(--color-light-text); 
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+/* --- 2. BODY И ФОНОВОЕ ИЗОБРАЖЕНИЕ --- */
+body {
+    font-family: 'Arial', sans-serif;
+    color: var(--text-color);
     line-height: 1.6;
-}
-
-/* ШАПКА И НАВИГАЦИЯ */
-header {
-    background-color: var(--color-primary);
-    color: var(--color-text);
-    padding: 20px 5%;
-    
-    /* Flexbox для позиционирования */
-    display: flex; 
-    justify-content: space-between; /* Разносит крайние элементы */
-    align-items: center; 
-    
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    position: relative; 
-}
-
-/* Логотип AI Chef (Центрирование через абсолют) */
-header h1 {
-    margin: 0;
-    font-size: 2.5em; 
-    text-transform: uppercase;
-    
-    /* Принудительное центрирование */
-    position: absolute; 
-    left: 50%;          
-    transform: translateX(-50%); 
-}
-
-/* Контейнер меню (должен быть последним в HTML для гарантированного размещения справа) */
-.menu-container {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-    z-index: 10; 
-    /* НОВОЕ: Сдвигаем контейнер вправо, чтобы он не мешал абсолютной центровке h1 */
-    margin-left: auto; 
-}
-
-/* Иконка гамбургера */
-.hamburger-icon {
-    width: 35px;
-    height: 30px;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+
+    /* ГЛАВНОЕ: Фон с изображением и затемнением */
+    background-image: 
+        /* Слой 1: Черное полупрозрачное затемнение */
+        linear-gradient(var(--bg-overlay), var(--bg-overlay)),
+        /* Слой 2: Ваше изображение (убедитесь, что оно в папке images) */
+        url('./images/food1.jpg');
+
+    background-size: cover;          /* Растянуть на весь экран */
+    background-position: center;     /* Центрировать */
+    background-attachment: fixed;    /* Зафиксировать при прокрутке */
+    background-repeat: no-repeat;
+}
+
+/* --- 3. ШАПКА (HEADER) --- */
+header {
+    background-color: rgba(0, 0, 0, 0.6); /* Прозрачная черная полоса */
+    padding: 1rem 2rem;
+    display: flex;
     justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(5px); /* Эффект размытия фона под шапкой */
 }
 
-.bar {
-    width: 100%;
-    height: 5px;
-    background-color: var(--color-text);
-    border-radius: 5px;
+header h1 a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-/* Выпадающее меню */
-.dropdown-menu {
-    display: none; 
-    position: absolute;
-    right: 0; /* Располагаем меню точно справа от иконки */
-    top: 100%; 
-    background-color: var(--color-dark-element); 
-    min-width: 180px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
-    z-index: 10;
-    border: 1px solid var(--color-primary); 
+/* Меню навигации */
+nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: var(--primary-color);
+}
+
+/* --- 4. ОСНОВНОЙ КОНТЕЙНЕР --- */
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+    flex: 1; /* Чтобы футер прижимался к низу */
+}
+
+.container h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.container p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Кнопка на главной */
+.button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #000;
+    padding: 12px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.button:hover {
+    background-color: var(--primary-hover);
+    transform: scale(1.05);
+}
+
+/* --- 5. ЧАТ ИНТЕРФЕЙС (chatindex.html) --- */
+
+.chat-container {
+    background-color: var(--container-bg); /* Темный полупрозрачный блок */
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Тень */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Тонкая рамка */
+    display: flex;
+    flex-direction: column;
+    height: 70vh; /* Высота чата - 70% от экрана */
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Область сообщений */
+.chat-messages {
+    flex: 1; /* Занимает все свободное место */
+    overflow-y: auto; /* Прокрутка, если много текста */
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Отступ между сообщениями */
+    margin-bottom: 20px;
+    scrollbar-width: thin; /* Тонкий скроллбар (Firefox) */
+    scrollbar-color: var(--primary-color) transparent;
+}
+
+/* Стилизация скроллбара (Chrome/Safari) */
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
     border-radius: 4px;
 }
 
-.dropdown-menu a {
-    color: var(--color-light-text);
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
+/* Сообщение ПОЛЬЗОВАТЕЛЯ (справа) */
+.user-message {
+    align-self: flex-end;
+    background-color: var(--user-msg-bg);
+    color: #000; /* Черный текст на желтом фоне */
+    padding: 12px 18px;
+    border-radius: 18px 18px 0 18px; /* Закругление углов */
+    max-width: 80%;
+    font-weight: 500;
+    animation: fadeIn 0.3s ease;
 }
 
-.dropdown-menu a:hover {
-    background-color: #333;
-    color: var(--color-primary);
+/* Сообщение БОТА (слева) */
+.bot-message {
+    align-self: flex-start;
+    background-color: var(--bot-msg-bg);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 18px 18px 18px 0;
+    max-width: 80%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.3s ease;
+    white-space: pre-wrap; /* Сохраняет абзацы в рецептах */
 }
 
-.menu-container:hover .dropdown-menu {
-    display: block;
+/* Временное сообщение (курсив) */
+.temp-loading-msg {
+    opacity: 0.7;
+    font-size: 0.9rem;
 }
 
-/* ОСНОВНОЙ КОНТЕНТ И ГРАДИЕНТНАЯ РАМКА */
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px; 
-    background-color: var(--color-dark-element); 
-    border-radius: 18px; 
-    border: 3px solid transparent; 
-    border-image: linear-gradient(135deg, var(--color-primary), #FFD700, var(--color-light-text)) 1;
-}
-
-/* КНОПКИ (УНИФИЦИРОВАННЫЕ) */
-.button, #send-button { 
-    background-color: var(--color-primary);
-    color: var(--color-text);
-    text-decoration: none;
-    border: none; 
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 14px; 
-    box-sizing: border-box; 
-    height: 44px; 
-    line-height: 24px; 
-    text-align: center;
-}
-
-.button:hover, #send-button:hover {
-    background-color: #FFA500;
-}
-
-/* СТИЛИ ЧАТА */
-.messages-area {
-    height: 350px; 
-    overflow-y: auto; 
-    border-radius: 14px;
-    padding: 15px;
-    margin-bottom: 15px;
-    background-color: var(--color-background); 
-}
-
-.input-area {
+/* --- 6. ОБЛАСТЬ ВВОДА (Внизу чата) --- */
+.chat-input-area {
     display: flex;
     gap: 10px;
 }
 
 #user-input {
-    flex-grow: 1; 
-    padding: 10px;
-    border: 2px solid var(--color-primary);
-    background-color: var(--color-dark-element);
-    color: var(--color-light-text);
-    border-radius: 8px;
-    font-size: 1em;
-    box-sizing: border-box;
+    flex: 1;
+    padding: 15px;
+    border-radius: 30px;
+    border: 2px solid #444;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
 }
 
-.bot-message {
-    background-color: var(--color-primary);
-    color: var(--color-text);
-    padding: 8px 12px;
-    border-radius: 15px 15px 15px 0; 
-    max-width: 80%;
-    margin-bottom: 10px;
-    float: left; 
-    clear: both; 
+#user-input:focus {
+    border-color: var(--primary-color);
+}
+
+#send-button {
+    background-color: var(--primary-color);
+    color: black;
+    border: none;
+    padding: 0 25px;
+    border-radius: 30px;
+    cursor: pointer;
     font-weight: bold;
+    font-size: 1rem;
+    transition: transform 0.2s, background-color 0.2s;
 }
 
-.user-message {
-    background-color: #333;
-    color: var(--color-light-text);
-    padding: 8px 12px;
-    border-radius: 15px 15px 0 15px; 
-    max-width: 80%;
-    margin-bottom: 10px;
-    float: right; 
-    clear: both;
+#send-button:hover {
+    background-color: var(--primary-hover);
+    transform: scale(1.05);
 }
 
-/* СТИЛИ СПИСКА КОМАНДЫ */
-.team-list {
-    list-style-type: none; 
-    padding-left: 0;
-    margin-top: 20px;
+#send-button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    transform: none;
 }
 
-.team-list li {
-    background-color: var(--color-dark-element);
-    color: var(--color-light-text);
-    padding: 15px 20px;
-    margin-bottom: 10px; 
-    border-left: 5px solid var(--color-primary);
-    font-weight: normal;
-    border-radius: 4px; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+/* Анимация появления */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* СТИЛИ АНИМАЦИИ ПЕЧАТИ */
-.typing {
-    min-height: 1.2em; 
-    border-right: 3px solid var(--color-light-text);
-    overflow: hidden; 
-    white-space: pre-wrap; 
-    animation: blink 0.7s step-end infinite;
-}
-
-@keyframes blink {
-    from, to { border-color: transparent; }
-    50% { border-color: var(--color-light-text); }
+/* --- 7. АДАПТИВНОСТЬ (Мобильные) --- */
+@media (max-width: 600px) {
+    .container h2 { font-size: 1.8rem; }
+    header { flex-direction: column; gap: 10px; }
+    nav a { margin: 0 10px; }
+    .chat-container { height: 80vh; width: 95%; margin-top: 10px; }
+    .user-message, .bot-message { max-width: 90%; }
 }
