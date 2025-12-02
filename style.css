@@ -1,16 +1,21 @@
-/* style.css | Дизайн для AI Chef */
+/* style.css | FINAL MERGED VERSION | 02.12.2025 */
+/* Объединяет: Меню-бургер справа, Фон с едой, Светлую страницу "О нас" */
 
-/* --- 1. ГЛОБАЛЬНЫЕ НАСТРОЙКИ --- */
+/* --- 1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ --- */
 :root {
-    --primary-color: #ffb300;       /* Оранжево-желтый (фирменный цвет) */
-    --primary-hover: #e09e00;       /* Цвет кнопки при наведении */
-    --text-color: #ffffff;          /* Белый текст */
-    --bg-overlay: rgba(0, 0, 0, 0.75); /* Затемнение фона (75%) */
-    --container-bg: rgba(20, 20, 20, 0.85); /* Полупрозрачный фон для блоков */
-    --user-msg-bg: #ffb300;         /* Цвет сообщения пользователя */
-    --bot-msg-bg: #333333;          /* Цвет сообщения бота */
+    /* Цвета из старого кода */
+    --color-primary: #FFB300;       /* Оранжево-желтый */
+    --color-text: #1C1C1C;          /* Темный текст (для светлых блоков) */
+    --color-light-text: #FFFFFF;    /* Светлый текст (для темного фона) */
+    
+    /* Новые переменные для дизайна */
+    --bg-overlay: rgba(0, 0, 0, 0.75); /* Затемнение фона */
+    --container-bg: rgba(20, 20, 20, 0.85); /* Полупрозрачный фон контейнеров */
+    --bot-msg-bg: #333333;
+    --user-msg-bg: #FFB300;
 }
 
+/* СБРОС СТИЛЕЙ */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -19,213 +24,280 @@
 
 /* --- 2. BODY И ФОНОВОЕ ИЗОБРАЖЕНИЕ --- */
 body {
-    font-family: 'Arial', sans-serif;
-    color: var(--text-color);
+    font-family: Arial, sans-serif;
+    color: var(--color-light-text);
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 
-    /* ГЛАВНОЕ: Фон с изображением и затемнением */
+    /* ФОН: Изображение еды + Затемнение */
     background-image: 
-        /* Слой 1: Черное полупрозрачное затемнение */
         linear-gradient(var(--bg-overlay), var(--bg-overlay)),
-        /* Слой 2: Ваше изображение (убедитесь, что оно в папке images) */
-        url('./images/food1.jpg');
+        url('./images/food1.jpg'); /* Убедитесь, что картинка здесь */
 
-    background-size: cover;          /* Растянуть на весь экран */
-    background-position: center;     /* Центрировать */
-    background-attachment: fixed;    /* Зафиксировать при прокрутке */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     background-repeat: no-repeat;
 }
 
-/* --- 3. ШАПКА (HEADER) --- */
+/* --- 3. ШАПКА (HEADER) - Логика из старого кода + Стиль из нового --- */
 header {
-    background-color: rgba(0, 0, 0, 0.6); /* Прозрачная черная полоса */
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
+    background-color: rgba(0, 0, 0, 0.8); /* Темный фон с прозрачностью */
+    padding: 20px 5%;
+    
+    /* Flexbox для позиционирования */
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    position: sticky; /* Липкая шапка */
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(5px); /* Эффект размытия фона под шапкой */
+    backdrop-filter: blur(5px);
+}
+
+/* Логотип AI Chef (Абсолютное центрирование из старого кода) */
+header h1 {
+    margin: 0;
+    font-size: 2rem; 
+    text-transform: uppercase;
+    position: absolute; 
+    left: 50%;                  
+    transform: translateX(-50%); 
+    white-space: nowrap;
 }
 
 header h1 a {
-    color: var(--primary-color);
+    color: var(--color-primary);
     text-decoration: none;
-    font-size: 1.8rem;
     font-weight: bold;
-    text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-/* Меню навигации */
-nav a {
-    color: var(--text-color);
+/* --- 4. МЕНЮ БУРГЕР (Из старого кода) --- */
+/* Контейнер меню (справа) */
+.menu-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    z-index: 101; 
+    margin-left: auto; /* Сдвиг вправо */
+}
+
+/* Иконка гамбургера */
+.hamburger-icon {
+    width: 30px;
+    height: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.bar {
+    width: 100%;
+    height: 4px;
+    background-color: var(--color-primary); /* Желтый цвет полосок */
+    border-radius: 5px;
+}
+
+/* Выпадающее меню */
+.dropdown-menu {
+    display: none; 
+    position: absolute;
+    right: 0; 
+    top: 100%; 
+    margin-top: 15px;
+    background-color: #222; /* Темный фон меню */
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.8);
+    z-index: 10;
+    border: 1px solid var(--color-primary); 
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.dropdown-menu a {
+    color: var(--color-light-text);
+    padding: 15px 20px;
     text-decoration: none;
-    margin-left: 20px;
-    font-size: 1rem;
-    transition: color 0.3s;
+    display: block;
+    border-bottom: 1px solid #333;
 }
 
-nav a:hover {
-    color: var(--primary-color);
+.dropdown-menu a:hover {
+    background-color: var(--color-primary);
+    color: #000;
 }
 
-/* --- 4. ОСНОВНОЙ КОНТЕЙНЕР --- */
+/* Показ меню при наведении (или клике на мобильных) */
+.menu-container:hover .dropdown-menu {
+    display: block;
+}
+
+/* --- 5. ОСНОВНОЙ КОНТЕЙНЕР (Градиентная рамка из старого кода) --- */
 .container {
+    width: 90%;
     max-width: 900px;
     margin: 40px auto;
-    padding: 20px;
+    padding: 30px; 
     text-align: center;
-    flex: 1; /* Чтобы футер прижимался к низу */
+    
+    /* Темный фон + Градиентная рамка */
+    background-color: var(--container-bg); 
+    border-radius: 18px; 
+    border: 3px solid transparent; 
+    border-image: linear-gradient(135deg, var(--color-primary), #FFD700, #fff) 1;
+    
+    flex: 1; /* Прижимает футер */
 }
 
 .container h2 {
-    font-size: 2.5rem;
+    color: var(--color-primary);
+    font-size: 2.2rem;
     margin-bottom: 20px;
-    color: var(--primary-color);
 }
 
 .container p {
-    font-size: 1.2rem;
-    margin-bottom: 30px;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Кнопка на главной */
-.button {
-    display: inline-block;
-    background-color: var(--primary-color);
-    color: #000;
-    padding: 12px 30px;
-    border-radius: 30px;
-    text-decoration: none;
-    font-weight: bold;
     font-size: 1.1rem;
-    transition: transform 0.2s, background-color 0.2s;
+    margin-bottom: 30px;
 }
 
-.button:hover {
-    background-color: var(--primary-hover);
+/* --- 6. СПЕЦИАЛЬНЫЙ СТИЛЬ ДЛЯ "О НАС" (Светлая тема) --- */
+/* Используйте этот класс в about.html вместо .container */
+.about-container {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px;
+    
+    /* СВЕТЛЫЙ ФОН */
+    background-color: #FFFFFF; 
+    color: #000000; 
+    
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.about-container h2 {
+    color: var(--color-primary);
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-top: 30px;
+}
+
+.about-container p, .about-container li {
+    color: #333; /* Темно-серый текст для чтения */
+    font-size: 1.1rem;
+}
+
+/* СТИЛИ СПИСКА КОМАНДЫ (Из старого кода) */
+.team-list {
+    list-style-type: none; 
+    padding-left: 0;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.team-list li {
+    background-color: #f4f4f4; /* Светло-серый фон плашек */
+    color: #000;
+    padding: 15px 20px;
+    margin-bottom: 10px; 
+    border-left: 5px solid var(--color-primary);
+    font-weight: bold;
+    border-radius: 4px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* --- 7. КНОПКИ --- */
+.button, #send-button { 
+    background-color: var(--color-primary);
+    color: #000;
+    text-decoration: none;
+    border: none; 
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: transform 0.2s, background-color 0.3s;
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 30px; 
+}
+
+.button:hover, #send-button:hover {
+    background-color: #e6a200;
     transform: scale(1.05);
 }
 
-/* --- 5. ЧАТ ИНТЕРФЕЙС (chatindex.html) --- */
-
+/* --- 8. ЧАТ ИНТЕРФЕЙС (Новый красивый дизайн) --- */
 .chat-container {
-    background-color: var(--container-bg); /* Темный полупрозрачный блок */
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Тень */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Тонкая рамка */
-    display: flex;
-    flex-direction: column;
-    height: 70vh; /* Высота чата - 70% от экрана */
+    /* Если используется на странице чата */
+    background-color: var(--container-bg);
     max-width: 800px;
-    margin: 0 auto;
-}
-
-/* Область сообщений */
-.chat-messages {
-    flex: 1; /* Занимает все свободное место */
-    overflow-y: auto; /* Прокрутка, если много текста */
-    padding: 15px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 15px;
+    height: 75vh;
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Отступ между сообщениями */
-    margin-bottom: 20px;
-    scrollbar-width: thin; /* Тонкий скроллбар (Firefox) */
-    scrollbar-color: var(--primary-color) transparent;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Стилизация скроллбара (Chrome/Safari) */
-.chat-messages::-webkit-scrollbar {
-    width: 8px;
-}
-.chat-messages::-webkit-scrollbar-thumb {
-    background-color: var(--primary-color);
-    border-radius: 4px;
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-primary) transparent;
 }
 
-/* Сообщение ПОЛЬЗОВАТЕЛЯ (справа) */
 .user-message {
     align-self: flex-end;
     background-color: var(--user-msg-bg);
-    color: #000; /* Черный текст на желтом фоне */
-    padding: 12px 18px;
-    border-radius: 18px 18px 0 18px; /* Закругление углов */
+    color: #000;
+    padding: 10px 15px;
+    border-radius: 15px 15px 0 15px;
     max-width: 80%;
-    font-weight: 500;
     animation: fadeIn 0.3s ease;
 }
 
-/* Сообщение БОТА (слева) */
 .bot-message {
     align-self: flex-start;
     background-color: var(--bot-msg-bg);
     color: #fff;
-    padding: 12px 18px;
-    border-radius: 18px 18px 18px 0;
+    padding: 10px 15px;
+    border-radius: 15px 15px 15px 0;
     max-width: 80%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255,255,255,0.1);
     animation: fadeIn 0.3s ease;
-    white-space: pre-wrap; /* Сохраняет абзацы в рецептах */
+    white-space: pre-wrap;
 }
 
-/* Временное сообщение (курсив) */
-.temp-loading-msg {
-    opacity: 0.7;
-    font-size: 0.9rem;
-}
-
-/* --- 6. ОБЛАСТЬ ВВОДА (Внизу чата) --- */
 .chat-input-area {
     display: flex;
     gap: 10px;
+    margin-top: 15px;
 }
 
 #user-input {
-    flex: 1;
+    flex-grow: 1;
     padding: 15px;
     border-radius: 30px;
-    border: 2px solid #444;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
+    border: 2px solid #555;
+    background-color: rgba(0,0,0,0.5);
+    color: #fff;
     font-size: 1rem;
     outline: none;
-    transition: border-color 0.3s;
 }
 
 #user-input:focus {
-    border-color: var(--primary-color);
-}
-
-#send-button {
-    background-color: var(--primary-color);
-    color: black;
-    border: none;
-    padding: 0 25px;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: transform 0.2s, background-color 0.2s;
-}
-
-#send-button:hover {
-    background-color: var(--primary-hover);
-    transform: scale(1.05);
-}
-
-#send-button:disabled {
-    background-color: #555;
-    cursor: not-allowed;
-    transform: none;
+    border-color: var(--color-primary);
 }
 
 /* Анимация появления */
@@ -234,11 +306,9 @@ nav a:hover {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- 7. АДАПТИВНОСТЬ (Мобильные) --- */
+/* --- 9. АДАПТИВНОСТЬ --- */
 @media (max-width: 600px) {
-    .container h2 { font-size: 1.8rem; }
-    header { flex-direction: column; gap: 10px; }
-    nav a { margin: 0 10px; }
-    .chat-container { height: 80vh; width: 95%; margin-top: 10px; }
-    .user-message, .bot-message { max-width: 90%; }
+    header h1 { font-size: 1.5rem; }
+    .container, .about-container { width: 95%; padding: 20px; }
+    .chat-container { height: 80vh; width: 98%; }
 }
