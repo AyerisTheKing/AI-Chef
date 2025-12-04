@@ -1,7 +1,7 @@
 /* chat.js v2.1 | 01.12.2025 | Исправлено: добавлены функции appendMessage и typeWriterEffect */
 
-// Стало (правильный, полный URL вашего Netlify-сайта):
-const PROXY_URL = "https://aichefbykaxxorov.netlify.app/.netlify/functions/gemini-proxy";
+// Меняем полный URL прокси на относительный путь, который определен в Netlify.toml
+const PROXY_URL = "/functions/gemini-proxy";
 const API_TIMEOUT_MS = 15000; // 15 секунд
 
 document.addEventListener('DOMContentLoaded', () => {

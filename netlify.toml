@@ -1,10 +1,12 @@
 [build]
   functions = ".netlify/functions"
-  # Указываем несуществующую папку, чтобы Netlify не искал статику
-  publish = "public-placeholder" 
+  # ИСПРАВЛЕНО: Указываем корневой каталог, где лежит index.html и JS
+  publish = "."
 
 # Правило перенаправления
 [[redirects]]
-  from = "/.netlify/functions/*"
+  # ИСПРАВЛЕНО: Меняем from на внешний путь /functions/*.
+  # Теперь в chat.js вы можете использовать PROXY_URL = "/functions/gemini-proxy"
+  from = "/functions/*"
   to = "/.netlify/functions/:splat"
   status = 200
