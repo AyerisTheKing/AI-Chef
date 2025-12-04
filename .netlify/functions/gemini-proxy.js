@@ -1,63 +1,39 @@
-/* gemini-proxy.js v1.1 | 04.12.2025 | ДОБАВЛЕНА ЛОГИКА ОБРАБОТКИ CORS */
+/* gemini-proxy.js v1.2 | 05.12.2025 | FIX: Структура запроса Gemini API */
 
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
 const SYSTEM_PROMPT = "Ты — опытный шеф-повар и кулинарный эксперт AI Chef. Твоя задача — подбирать рецепты только по тем ингредиентам, которые назвал пользователь. Отвечай дружелюбно, уверенно и профессионально. Всегда указывай название блюда, список ингредиентов и краткую инструкцию по приготовлению.";
 
-// 1. Определяем заголовки для разрешения CORS
-const CORS_HEADERS = {
-    'Access-Control-Allow-Origin': 'https://ayeristheking.github.io', // <--- Разрешает только ваш фронтенд на GitHub Pages
-    'Access-Control-Allow-Methods': 'POST, OPTIONS', // <--- Разрешает методы POST и OPTIONS
-    'Access-Control-Allow-Headers': 'Content-Type', // <--- Разрешает заголовок Content-Type
-};
-
-// Главный обработчик Serverless Function Netlify
 exports.handler = async (event) => {
     
-    // --- НОВОЕ: Обработка предварительного (preflight) OPTIONS-запроса ---
-    if (event.httpMethod === 'OPTIONS') {
-        return {
-            statusCode: 200,
-            headers: CORS_HEADERS, // Просто возвращаем CORS-заголовки
-            body: '' // Тело ответа не требуется
-        };
+    // 1. Проверка метода (CORS обрабатывается через файл _headers, здесь только проверка метода)
+    if (event.httpMethod !== 'POST') {
+        return { statusCode: 405, body: "Метод не разрешен. Используйте POST." };
     }
-    // --------------------------------------------------------------------
 
-    // 1. Получаем ключ из переменных окружения Netlify. 
+    // 2. Получаем ключ API
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY; 
-    
     if (!GEMINI_API_KEY) {
+        console.error("Ошибка: GEMINI_API_KEY не найден в переменных окружения.");
         return {
             statusCode: 500,
-            headers: CORS_HEADERS, // Всегда возвращаем CORS-заголовки
-            body: JSON.stringify({ message: "Ошибка конфигурации: ключ API (GEMINI_API_KEY) не найден." })
+            body: JSON.stringify({ message: "Ошибка конфигурации сервера: ключ API не найден." })
         };
     }
 
-    if (event.httpMethod !== 'POST') {
-        return { 
-            statusCode: 405, 
-            headers: CORS_HEADERS, // Всегда возвращаем CORS-заголовки
-            body: "Метод не разрешен. Используйте POST." 
-        };
-    }
-
+    // 3. Парсинг тела запроса от пользователя
     let userText;
     try {
         const body = JSON.parse(event.body);
         userText = body.userText;
     } catch (e) {
-        return { 
-            statusCode: 400, 
-            headers: CORS_HEADERS, // Всегда возвращаем CORS-заголовки
-            body: "Неверный формат JSON тела запроса." 
-        };
+        return { statusCode: 400, body: "Неверный формат JSON." };
     }
 
-    // Формирование тела запроса к Google Gemini API
+    // 4. Формирование тела запроса к Google Gemini API (ИСПРАВЛЕНО!)
     const requestBody = {
-        config: {
-            systemInstruction: SYSTEM_PROMPT 
+        // systemInstruction теперь на верхнем уровне, без обертки "config"
+        systemInstruction: {
+            parts: [{ text: SYSTEM_PROMPT }]
         },
         contents: [
             {
@@ -72,45 +48,44 @@ exports.handler = async (event) => {
     };
 
     try {
-        // Выполняем запрос БЕЗОПАСНО с сервера
+        // 5. Отправка запроса к Gemini
         const response = await fetch(GEMINI_API_URL + GEMINI_API_KEY, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody)
         });
 
+        // Обработка ошибок от Google API
         if (!response.ok) {
             const errorData = await response.json();
+            console.error("Gemini API Error:", errorData);
             const errorMessage = errorData.error ? errorData.error.message : `HTTP Error: ${response.status}`;
             
             return {
                 statusCode: response.status,
-                headers: CORS_HEADERS, // ВСЕГДА ДОБАВЛЯЕМ
                 body: JSON.stringify({ message: `Ошибка Gemini API: ${errorMessage}` })
             };
         }
 
         const data = await response.json();
         
-        let chefResponse = "Шеф-повар в замешательстве. Попробуйте уточнить список продуктов.";
+        let chefResponse = "Шеф-повар задумался, но не смог придумать рецепт. Попробуйте другие ингредиенты.";
 
         if (data.candidates && data.candidates.length > 0 && data.candidates[0].content) {
             chefResponse = data.candidates[0].content.parts[0].text;
         }
 
-        // Отправляем чистый ответ обратно фронтенду
+        // 6. Успешный ответ
         return {
             statusCode: 200,
-            headers: CORS_HEADERS, // ВСЕГДА ДОБАВЛЯЕМ
             body: JSON.stringify({ message: chefResponse })
         };
 
     } catch (error) {
-        console.error("Произошла ошибка запроса:", error);
+        console.error("Внутренняя ошибка сервера:", error);
         return {
             statusCode: 500,
-            headers: CORS_HEADERS, // ВСЕГДА ДОБАВЛЯЕМ
-            body: JSON.stringify({ message: "Произошла внутренняя ошибка сервера. Проверьте логи Netlify." })
+            body: JSON.stringify({ message: "Внутренняя ошибка сервера." })
         };
     }
 };
