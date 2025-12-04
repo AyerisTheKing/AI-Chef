@@ -174,7 +174,7 @@ header h1 a {
     padding: 40px;
     
     /* СВЕТЛЫЙ ФОН */
-    background-color: #ffffff00; 
+    background-color: #342929; 
     color: #000000; 
     
     border-radius: 15px;
@@ -189,7 +189,7 @@ header h1 a {
 }
 
 .about-container p, .about-container li {
-    color: #333; /* Темно-серый текст для чтения */
+    color: #646464; /* Темно-серый текст для чтения */
     font-size: 1.1rem;
 }
 
